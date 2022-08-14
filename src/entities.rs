@@ -19,7 +19,6 @@ impl Transaction {
     }
 }
 
-// #[serde(crate = "rocket::serde")]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Block {
     pub previous_hash: String,
