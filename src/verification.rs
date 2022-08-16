@@ -38,4 +38,3 @@ impl Verification {
         &hash[0..3] == "000"
     }
 }
-

@@ -8,6 +8,7 @@ use std::fs::File;
 use std::io::Write;
 use std::{fs, io};
 
+#[derive(Debug)]
 pub struct Wallet {
     pub id: String,
     keypair: Option<PKey<Private>>,
@@ -84,4 +85,3 @@ impl Wallet {
         verifier.verify(&signature).unwrap()
     }
 }
-

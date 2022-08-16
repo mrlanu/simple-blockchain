@@ -6,8 +6,9 @@ use crate::verification::Verification;
 use crate::wallet::Wallet;
 use crate::Block;
 
+#[derive(Debug)]
 pub struct Node {
-    wallet: Wallet,
+    pub wallet: Wallet,
     pub blockchain: Blockchain,
 }
 
@@ -109,4 +110,3 @@ impl Node {
         println!();
     }
 }
-

@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 use crate::entities::{Block, Transaction};
 use std::collections::HashSet;
 use std::fs::File;
@@ -8,6 +10,7 @@ use crate::verification::Verification;
 use crate::wallet::Wallet;
 use crate::{Chain, PATH, REWARD};
 
+#[derive(Debug, Serialize, Clone)]
 pub struct Blockchain {
     pub hosting_node_id: String,
     pub chain: Chain,
@@ -86,7 +89,7 @@ impl Blockchain {
         };
     }
 
-    pub fn mine_block(&mut self) -> Result<(), String> {
+    pub fn mine_block(&mut self) -> Result<Block, String> {
         let last_block = self.chain.get(self.chain.len() - 1).expect("Error");
         let prev_hash = hash_block(&last_block);
         let mut transactions = self.transactions.clone();
@@ -94,17 +97,17 @@ impl Blockchain {
             return !Wallet::verify_transaction(t);
         }) {
             println!("Error. There is bad transaction.");
-            return Err("err".to_string());
+            return Err("Error. There is bad transaction".to_string());
         }
         let reward_transaction =
             Transaction::new("SYSTEM", &self.hosting_node_id, &REWARD.to_string(), "");
         transactions.push(reward_transaction);
         let proof = self.proof_of_work();
         let block = Block::new(self.chain.len(), &prev_hash, transactions, proof);
-        self.chain.push(block);
+        self.chain.push(block.clone());
         self.transactions.clear();
         self.save_data();
-        Ok(())
+        Ok(block)
     }
 
     fn save_data(&self) {
